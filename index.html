@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seraph | Portfolio</title>
+    <meta
+      name="description"
+      content="Seraph's portfolio: modern, human-centred web experiences built with React, GSAP, and cinematic interaction design."
+    />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://seraphcodes.de/" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/profile.png" />
+    <link rel="apple-touch-icon" href="/profile.png" />
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Seraph | Portfolio" />
+    <meta property="og:title" content="Seraph | Portfolio" />
+    <meta
+      property="og:description"
+      content="Frontend developer building modern, human-centred web experiences. Based in Germany."
+    />
+    <meta property="og:image" content="https://seraphcodes.de/profile.png" />
+    <meta property="og:url" content="https://seraphcodes.de/" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Seraph | Portfolio" />
+    <meta
+      name="twitter:description"
+      content="Frontend developer building modern, human-centred web experiences. Based in Germany."
+    />
+    <meta name="twitter:image" content="https://seraphcodes.de/profile.png" />
+
+    <!-- Theme: read localStorage before React mounts to prevent flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('sh-theme')
+          if (t === 'light' || t === 'dark') {
+            document.documentElement.setAttribute('data-theme', t)
+          }
+        } catch (_) {}
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

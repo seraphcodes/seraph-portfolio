@@ -1,0 +1,1185 @@
+/* ============================================================
+   SERAPH HASHIMI — Premium Portfolio CSS
+   All Phases 1–8 + Rubric compliance
+   ============================================================ */
+
+/* ── Reset ── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+img,video{display:block;max-width:100%}
+ul,ol{list-style:none}
+button{cursor:pointer;font:inherit;border:none;background:none}
+a{color:inherit;text-decoration:none}
+
+/* ── Tokens — dark (default) ── */
+:root {
+  /* Palette — warm charcoal, NOT pure black */
+  --bg:          #171614;      /* deep warm charcoal */
+  --bg-2:        #1e1c1a;
+  --parch:       #F0EAE1;      /* warm cream */
+  --parch-2:     #E6DDD3;
+  --ink:         #1A1816;
+  --bronze:      #B8956A;
+  --bronze-2:    #C9A87C;
+  --bronze-3:    #8C6D4A;
+  --muted:       #7A746C;
+  --rule-dark:   rgba(240,234,225,.07);
+  --rule-light:  rgba(26,24,22,.10);
+
+  /* Section surfaces */
+  --s-dark-bg:   #171614;
+  --s-dark-text: #F0EAE1;
+  --s-light-bg:  #F0EAE1;
+  --s-light-bg2: #E6DDD3;
+  --s-light-text:#1A1816;
+  --s-light-mut: #635D55;
+
+  /* Type */
+  --serif: 'Cormorant Garant', Georgia, serif;
+  --sans:  'DM Sans', system-ui, sans-serif;
+
+  /* Scale */
+  --fs-hero:   clamp(3.2rem, 7.5vw, 7rem);
+  --fs-name:   clamp(5rem,  13vw, 14rem);
+  --fs-h2:     clamp(2.6rem, 5.5vw, 5rem);
+  --fs-h3:     clamp(1.5rem, 2.5vw, 2.2rem);
+  --fs-lead:   clamp(1.2rem, 2vw, 1.75rem);
+  --fs-body:   clamp(.93rem, 1.15vw, 1.02rem);
+  --fs-tag:    0.70rem;
+
+  /* Space */
+  --pad:   clamp(1.5rem, 5vw, 5rem);
+  --wrap:  1080px;
+  --sp-sm: 1rem;
+  --sp-md: 2rem;
+  --sp-lg: 4.5rem;
+  --sp-xl: 8rem;
+  --sp-2xl:13rem;
+
+  /* Easing */
+  --ease:   cubic-bezier(.16,1,.3,1);
+  --ease2:  cubic-bezier(.45,0,.55,1);
+
+  /* Hero portrait brightness at rest — restored to a premium, clear
+     presentation. Previously .8 (noticeably dim); light theme override
+     below still lifts it further for that theme's brighter atmosphere. */
+  --hero-portrait-brightness: 1;
+}
+
+/* ── Base ── */
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  background: var(--bg);
+  color: var(--parch);
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  overflow-x: hidden;
+  transition: background .4s, color .4s;
+}
+body.nav-open { overflow: hidden; }
+:focus-visible { outline: 2px solid var(--bronze); outline-offset: 3px; border-radius: 2px; }
+
+/* ── Container ── */
+.container {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+/* ── Section head ── */
+.section-head  { margin-bottom: var(--sp-lg); }
+.section-tag   {
+  display: block;
+  font-size: var(--fs-tag);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: .4rem;
+}
+.section-rule  { width: 100%; height: 1px; background: currentColor; opacity: .1; }
+
+/* ── Scroll progress ── */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 1px;
+  width: 0;
+  background: var(--bronze);
+  z-index: 9999;
+  transition: width .1s linear;
+  pointer-events: none;
+}
+
+/* ── Cursor spotlight (global) — refined Priority 4: smaller, softer,
+   supports the cursor system rather than competing with it ── */
+.cursor-spotlight {
+  position: fixed;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(184,149,106,.035) 0%,
+    rgba(184,149,106,.015) 45%,
+    transparent 72%
+  );
+  transition: left .15s linear, top .15s linear;
+}
+
+/* ── Premium cursor system (Priority 4) ──────────────────────────
+   Two small followers on top of the native OS pointer - the pointer
+   itself is never hidden. The dot tracks almost instantly; the ring
+   trails with more inertia (see CursorSystem.jsx), and that timing
+   gap between them is the entire "motion trail" - no particles, no
+   glow smear, just two circles at two speeds. Both are positioned via
+   GSAP-driven transform (translate3d under the hood), never top/left,
+   so they stay GPU-composited and never trigger layout. */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9998;
+  will-change: transform;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bronze);
+  opacity: 0.85;
+}
+
+.cursor-ring {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(184,149,106,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width .35s var(--ease), height .35s var(--ease), border-color .35s var(--ease);
+}
+
+/* Magnetic-hover state: the ring grows just slightly and warms in
+   color - restrained, not a dramatic pop. */
+.cursor-ring--magnet {
+  width: 44px;
+  height: 44px;
+  border-color: rgba(184,149,106,.75);
+  background: rgba(184,149,106,.05);
+}
+
+/* Context label (Stage 2): only appears on elements explicitly opted
+   in via [data-cursor-label]. Ring grows a bit further to make room
+   for the word rather than the word overflowing the ring's edge. */
+.cursor-ring--label {
+  width: 64px;
+  height: 64px;
+}
+.cursor-ring__label {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bronze);
+  opacity: 0;
+  transition: opacity .2s var(--ease);
+  white-space: nowrap;
+}
+.cursor-ring--label .cursor-ring__label,
+.cursor-ring--label.cursor-ring--magnet .cursor-ring__label {
+  opacity: 1;
+}
+
+/* Hide the whole system on touch devices / reduced motion as an extra
+   safety net beyond the JS bail-out (covers any edge case where the
+   component mounts before matchMedia is evaluated). */
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+}
+.premium-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  color: rgba(240,234,225,.55);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.premium-intro__content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.premium-intro__panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1817;
+  overflow: hidden;
+}
+
+.premium-intro__panel--left {
+  left: 0;
+  box-shadow: inset -32px 0 40px -32px rgba(0,0,0,.55);
+}
+
+.premium-intro__panel--right {
+  right: 0;
+  box-shadow: inset 32px 0 40px -32px rgba(0,0,0,.55);
+}
+
+/* The seam - a solid, weighted architectural line present from frame
+   one, not a decorative element that grows into view. This is the
+   hinge the curtains open from. */
+.premium-intro__divider {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1.2px;
+  transform: translateX(-50%);
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(184,149,106,.18) 12%,
+    rgba(184,149,106,.3) 50%,
+    rgba(184,149,106,.18) 88%,
+    transparent 100%
+  );
+  box-shadow: 0 0 12px 1px rgba(184,149,106,.08);
+  pointer-events: none;
+}
+
+.premium-intro__letters {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: clamp(1.6rem, 1.12vw, 1.8rem);
+  font-weight: 550;
+  letter-spacing: .08em;
+  opacity: 0;
+  line-height: 1;
+  white-space: nowrap;
+  max-width: 88%;
+  text-transform: uppercase;
+  z-index: 1;
+  text-shadow: 0 0 10px rgba(255,255,255,.08);
+}
+
+.premium-intro__panel--left .premium-intro__letters {
+  right: -0.2rem;
+  left: auto;
+}
+
+.premium-intro__panel--right .premium-intro__letters {
+  left: 0.01rem;
+  right: auto;
+}
+
+.premium-intro__letters span {
+  display: inline-block;
+}
+/* ═══════════════════════════════════════════════════════════
+   HEADER — Phase 5
+═══════════════════════════════════════════════════════════ */
+.site-header {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  padding: 1.7rem var(--pad);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 600;
+  color: var(--parch);
+  transition: padding .4s var(--ease), color .3s, background .3s;
+}
+/* Adaptive: over light sections */
+.site-header[data-over="light"],
+.site-header[data-over="light-alt"] {
+  color: var(--ink);
+}
+.site-header.scrolled { padding-block: 1.1rem; }
+
+/* Logo — hidden after hero */
+.header-logo {
+  font-family: var(--sans);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: .22em;
+  transition: opacity .4s, transform .4s var(--ease);
+}
+.site-header.past-hero .header-logo {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+}
+
+.header-right { display: flex; align-items: center; gap: 1rem; }
+
+/* Nav toggle */
+.nav-toggle {
+  display: flex; align-items: center; gap: .6rem;
+  color: inherit;
+  transition: opacity .2s;
+}
+.nav-toggle:hover { opacity: .55; }
+.nav-toggle__label {
+  font-size: var(--fs-tag);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  transition: opacity .3s, width .3s;
+}
+/* Past-hero: hide label */
+.site-header.past-hero .nav-toggle__label {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  margin: 0;
+}
+.nav-toggle__bars { display: flex; flex-direction: column; gap: 5px; width: 20px; }
+.nav-toggle__bars span {
+  display: block; width: 100%; height: 1px;
+  background: currentColor;
+  transition: transform .4s var(--ease), opacity .2s;
+  transform-origin: center;
+}
+body.nav-open .nav-toggle__bars span:first-child { transform: translateY(6px) rotate(45deg); }
+body.nav-open .nav-toggle__bars span:last-child  { transform: translateY(-6px) rotate(-45deg); }
+
+/* ═══════════════════════════════════════════════════════════
+   NAV OVERLAY
+═══════════════════════════════════════════════════════════ */
+.nav-overlay {
+  position: fixed; inset: 0;
+  background: #141210;
+  z-index: 500;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 8rem var(--pad) 4rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .45s var(--ease);
+}
+.nav-overlay.is-open { opacity: 1; pointer-events: auto; }
+.nav-overlay__nav { display: flex; flex-direction: column; gap: .2rem; }
+
+.nav-link {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 300;
+  line-height: 1.0;
+  color: #F0EAE1;
+  display: flex; align-items: baseline; gap: 1rem;
+  transition: color .2s, letter-spacing .4s var(--ease);
+}
+.nav-link::before {
+  content: attr(data-index);
+  font-family: var(--sans);
+  font-size: var(--fs-tag);
+  letter-spacing: .1em;
+  color: var(--muted);
+  transform: translateY(-.5rem);
+}
+.nav-link:hover { color: var(--bronze); letter-spacing: .02em; }
+
+.nav-overlay__footer {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  flex-wrap: wrap; gap: 1rem;
+  border-top: 1px solid rgba(240,234,225,.07);
+  padding-top: 2rem;
+  font-size: var(--fs-tag);
+  letter-spacing: .12em;
+  color: var(--muted);
+}
+.nav-overlay__social { display: flex; gap: 2rem; }
+.nav-overlay__social a,
+.nav-overlay__footer p { color: var(--muted); transition: color .2s; }
+.nav-overlay__social a:hover { color: #F0EAE1; }
+
+/* ═══════════════════════════════════════════════════════════
+   HERO — Phase 2 name reveal + Phase 3 spotlight
+═══════════════════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  height: 100svh; min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--pad);
+  overflow: hidden;
+  background: var(--bg);
+  z-index: 1;
+}
+
+/* Portrait layer */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+}
+.hero__portrait {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  filter: saturate(.85) brightness(var(--hero-portrait-brightness));
+  transition: filter .4s var(--ease);
+}
+.hero__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(23,22,20,.96) 0%,
+    rgba(23,22,20,.6)  32%,
+    rgba(23,22,20,.25) 62%,
+    rgba(23,22,20,0)   100%
+  );
+  transition: background .4s var(--ease);
+}
+[data-theme="light"] .hero__veil {
+  /* Warmer, lighter veil so the hero visibly shifts tone in light mode
+     while keeping the hero text (which stays cream/white) readable. */
+  background: linear-gradient(
+    to top,
+    rgba(43,34,28,.92) 0%,
+    rgba(60,48,40,.55) 32%,
+    rgba(80,65,55,.22) 62%,
+    rgba(80,65,55,0)   100%
+  );
+}
+.hero__grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(240,234,225,.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240,234,225,.028) 1px, transparent 1px);
+  background-size: 72px 72px;
+  pointer-events: none;
+}
+
+/* ── Cursor reveal mask ── */
+.hero__reveal-mask {
+  position: absolute; inset: 0;
+  opacity: 0;
+  transition: opacity .3s;
+  /* clip to circular area around cursor */
+  -webkit-mask-image: radial-gradient(
+    circle 160px at var(--mx, -999px) var(--my, -999px),
+    black 0%, transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle 160px at var(--mx, -999px) var(--my, -999px),
+    black 0%, transparent 100%
+  );
+}
+.hero__portrait--clear {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  filter: saturate(1) brightness(1.05);
+}
+[data-theme="light"] .hero__portrait--clear {
+  filter: saturate(1.05) brightness(1.15);
+}
+
+/* ── Phase 2: Name stage ── */
+.hero__name-stage {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 4;
+  transition: opacity .6s var(--ease), transform .6s var(--ease);
+  pointer-events: none;
+}
+.hero__name-stage.name-done {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+.name-split {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+.name-rule {
+  width: 0;
+  height: 1px;
+  background: rgba(240,234,225,.35);
+  transition: width 1s var(--ease);
+}
+.hero__name-stage.name-active .name-rule { width: min(520px, 80vw); }
+
+.name-letters {
+  display: flex; align-items: center;
+  font-family: var(--serif);
+  font-size: var(--fs-name);
+  font-weight: 300;
+  letter-spacing: .05em;
+  line-height: 1;
+  color: #F0EAE1;
+  position: relative;
+  overflow: hidden;
+}
+/* Letters start invisible, then appear */
+.name-left, .name-right {
+  display: block;
+  opacity: 0;
+  transition: opacity .5s var(--ease), transform .8s var(--ease);
+}
+.hero__name-stage.name-active .name-left  { opacity: 1; transform: none; }
+.hero__name-stage.name-active .name-right { opacity: 1; transform: none; }
+
+/* When split fires, halves move apart */
+.hero__name-stage.name-split .name-left  { transform: translateX(calc(-50% - 2rem)) !important; opacity: 0 !important; }
+.hero__name-stage.name-split .name-right { transform: translateX(calc( 50% + 2rem)) !important; opacity: 0 !important; }
+
+.name-divider {
+  display: block;
+  width: 1px;
+  height: .75em;
+  background: rgba(240,234,225,.4);
+  margin-inline: .5rem;
+  transition: opacity .3s;
+}
+.hero__name-stage.name-split .name-divider { opacity: 0; }
+
+/* ── Hero content — enters after name with a simple, clean reveal ── */
+.hero__content {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: clamp(1.25rem, 5vw, 3.5rem) clamp(4rem, 10vw, 6.5rem);
+  text-align: center;
+  flex-direction: column;
+  opacity: 0;
+  filter: blur(7px);
+  transform: translateX(26px);
+  pointer-events: none;
+  overflow: hidden;
+  /* Deliberately slow and gentle (not the site's snappier --ease) so the
+     text settles into place rather than visibly sliding or popping in -
+     opacity, blur and position all resolve together on one unhurried
+     curve, reading as "coming into focus" rather than "arriving". */
+  transition:
+    opacity 1.8s cubic-bezier(.22,.61,.36,1),
+    filter 1.8s cubic-bezier(.22,.61,.36,1),
+    transform 1.8s cubic-bezier(.22,.61,.36,1);
+}
+.hero__content.content-visible {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.hero__title {
+  font-family: var(--serif);
+  font-size: var(--fs-hero);
+  font-weight: 300;
+  line-height: 1.0;
+  letter-spacing: -.02em;
+  display: flex; flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #F0EAE1;
+}
+
+.hero__line,
+.hero__sub,
+.scroll-cue {
+  opacity: 0;
+  transition: opacity .8s var(--ease);
+}
+
+.hero__content.content-visible .hero__line,
+.hero__content.content-visible .hero__sub,
+.hero__content.content-visible .scroll-cue {
+  opacity: 1;
+}
+
+/* Phase 8: Living gradient accent */
+.gradient-word {
+  font-style: italic;
+  display: inline;
+  background: linear-gradient(
+    100deg,
+    var(--bronze-3) 0%,
+    var(--bronze)   25%,
+    var(--bronze-2) 50%,
+    #dfc08e         65%,
+    var(--bronze)   80%,
+    var(--bronze-3) 100%
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 6s linear infinite;
+}
+@keyframes shimmer {
+  0%   { background-position: 0%   center; }
+  100% { background-position: 300% center; }
+}
+
+.hero__sub {
+  margin-top: 1.4rem;
+  font-size: clamp(.87rem, 1.2vw, 1rem);
+  font-weight: 300;
+  color: rgba(240,234,225,.55);
+  line-height: 1.7;
+}
+
+/* ── Premium chevron scroll cue ──
+   Two thin strokes, a traveling fill-light, nothing more.
+   No accent colour. No border. No button affordance.
+   The motion is downward (scroll direction) so the eye reads it
+   subconsciously without registering a UI element demanding attention. */
+.scroll-cue {
+  margin-top: 3.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.scroll-cue__chevron {
+  width: clamp(46px, 5vw, 64px);
+  height: auto;
+  overflow: visible;
+}
+.scroll-cue__stroke {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: none;
+}
+.scroll-cue__stroke--outer {
+  stroke: rgba(240,232,220,.2);   /* warm neutral, not bronze */
+  stroke-width: 1.25;
+}
+.scroll-cue__stroke--inner {
+  stroke: rgba(240,232,220,.08);
+  stroke-width: 1;
+}
+.scroll-cue__fill {
+  fill: rgba(240,232,220,.36);     /* warm fill-light, warm neutral */
+  opacity: 0;
+}
+
+/* ── Hero bg scale target for the GSAP hero->philosophy bridge ── */
+.hero__bg { transform-origin: center center; will-change: transform; }
+
+/* ── Fade hero on scroll (handled via CSS variable from JS if desired) ── */
+.hero__content,
+.hero__name-stage { will-change: opacity, transform; }
+
+/* ═══════════════════════════════════════════════════════════
+   REVEAL SYSTEM — GSAP + ScrollTrigger driven (see useScrollReveal.js)
+   Base state only: GSAP sets/animates opacity + transform via inline
+   styles directly, so no CSS transition here (would double up / fight
+   with GSAP's own easing). This is just the pre-JS fallback shape.
+═══════════════════════════════════════════════════════════ */
+.js-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal { opacity: 1 !important; transform: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO <-> PHILOSOPHY STAGE — one continuous surface
+   Hero's own background (portrait + veil + grid) is the ONLY
+   background for this entire pinned stage. Philosophy does not bring
+   a background of its own - see .stage-surface-tint below for the one
+   shared material that transforms in its place, and .philosophy-text
+   for the plain text layer that sits on top of it.
+═══════════════════════════════════════════════════════════ */
+.hero-philosophy-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 100svh;
+  background: var(--bg);
+}
+
+/* The one continuous material: a full-bleed colour layer sitting above
+   Hero's imagery. Its background-color is scrubbed from transparent to
+   the same warm cream used by About/Skills/Projects - this is not a
+   second surface replacing the first, it's the same surface's own
+   paint gradually shifting. See useHeroBridge.js. */
+.stage-surface-tint {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Philosophy's text layer - no background, no scale, no blur. Just a
+   small opacity + vertical drift, sitting on the one shared surface
+   above rather than bringing its own environment. */
+.philosophy-text {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* re-enabled once visible, see .philosophy-text--interactive */
+}
+.philosophy-text.philosophy-text--interactive {
+  pointer-events: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .philosophy-text {
+    pointer-events: auto;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PHILOSOPHY QUOTE — text only; colour matches the same ink used on
+   About/Skills/Projects once the shared surface has warmed to their tone
+═══════════════════════════════════════════════════════════ */
+.philosophy__inner {
+  position: relative;
+  z-index: 1;
+  max-width: none;
+  padding-inline: clamp(5rem, 7vw, 8rem);
+}
+.philosophy__quote {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 2.7vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+  border: none; quotes: none;
+  max-width: 820px;
+  margin-inline: auto;
+}
+.philosophy__quote em { font-style: italic; color: var(--bronze); }
+
+/* ═══════════════════════════════════════════════════════════
+   ABOUT
+═══════════════════════════════════════════════════════════ */
+.about,
+.skills,
+.projects {
+  position: relative;
+}
+.about::before,
+.skills::before,
+.projects::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .025;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.about {
+  background: var(--s-light-bg);
+  color: var(--s-light-text);
+  padding: 5rem 0;
+  margin-top: -1px;
+}
+.about .section-tag  { color: var(--s-light-mut); }
+.about .section-rule { background: var(--s-light-text); }
+
+.about__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.55fr;
+  gap: var(--sp-lg); align-items: start;
+  padding-top: var(--sp-sm);
+}
+.about__heading {
+  font-family: var(--serif);
+  font-size: var(--fs-h2);
+  font-weight: 300;
+  line-height: 1.0; letter-spacing: -.02em;
+  color: var(--s-light-text);
+  margin-bottom: var(--sp-lg);
+}
+.pill-btn {
+  display: inline-flex; align-items: center; gap: .45rem;
+  font-size: var(--fs-tag);
+  font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--parch);
+  background: var(--ink);
+  padding: .8rem 1.6rem;
+  border-radius: 100px;
+  transition: background .3s var(--ease), transform .4s var(--ease);
+}
+.pill-btn svg { width: 13px; height: 13px; stroke-width: 2; }
+.pill-btn:hover { background: var(--bronze); }
+
+.about__bio p {
+  font-size: clamp(.93rem, 1.3vw, 1.1rem);
+  font-weight: 300; line-height: 1.8;
+  color: var(--s-light-mut);
+  margin-bottom: 1rem; max-width: 490px;
+}
+.about__stats {
+  display: flex; gap: var(--sp-md);
+  padding-top: var(--sp-md);
+  border-top: 1px solid rgba(26,24,22,.1);
+  margin-top: var(--sp-md);
+  flex-wrap: wrap;
+}
+.about__stat { display: flex; flex-direction: column; }
+/* Reset browser dt/dd margins so dl layout matches the old span layout */
+.about__stat dt,
+.about__stat dd { margin: 0; padding: 0; }
+.stat-n {
+  font-family: var(--serif); font-size: 2.2rem;
+  font-weight: 300; line-height: 1;
+  color: var(--s-light-text);
+}
+.stat-l {
+  font-size: .7rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--s-light-mut);
+  margin-top: .3rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SKILLS
+═══════════════════════════════════════════════════════════ */
+.skills {
+  background: var(--s-light-bg2);
+  color: var(--s-light-text);
+  padding: var(--sp-xl) 0;
+}
+.skills .section-tag  { color: var(--s-light-mut); }
+.skills .section-rule { background: var(--s-light-text); }
+.skills__grid {
+  display: grid; grid-template-columns: 1fr 2fr;
+  gap: var(--sp-lg); align-items: start;
+  padding-top: var(--sp-sm);
+}
+.skills__intro {
+  font-family: var(--serif);
+  font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+  font-weight: 300; line-height: 1.45;
+  color: var(--s-light-text); max-width: 240px;
+}
+.skills__pills { display: flex; flex-wrap: wrap; gap: .6rem; }
+.skill-pill {
+  font-size: .8rem; font-weight: 400; letter-spacing: .04em;
+  color: var(--s-light-text);
+  background: var(--s-light-bg);
+  border: 1px solid rgba(26,24,22,.1);
+  border-radius: 100px; padding: .48rem 1.2rem;
+  transition: background .2s, color .2s, border-color .2s, transform .4s var(--ease);
+}
+.skill-pill:hover {
+  background: var(--ink); color: var(--parch);
+  border-color: var(--ink); transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PROJECTS
+═══════════════════════════════════════════════════════════ */
+.projects {
+  background: var(--s-light-bg);
+  color: var(--s-light-text);
+  padding: var(--sp-xl) 0;
+}
+.projects .section-tag  { color: var(--s-light-mut); }
+.projects .section-rule { background: var(--s-light-text); }
+
+.project-list { margin-top: var(--sp-sm); }
+.project-row {
+  position: relative;
+  border-bottom: 1px solid rgba(26,24,22,.1);
+  transition: transform .55s var(--ease), background-color .55s var(--ease), box-shadow .55s var(--ease);
+}
+
+.project-row__link {
+  display: flex; align-items: center; gap: var(--sp-md);
+  padding: 1.7rem 0;
+  color: var(--s-light-text);
+  border-radius: 10px;
+  transition: padding-left .4s var(--ease), background-color .4s var(--ease);
+}
+.project-row__link:hover { padding-left: 1rem; background-color: rgba(26,24,22,.035); }
+.project-row__link:hover .project-row__name { letter-spacing: .015em; }
+.project-row__link:hover .project-row__arrow { opacity: 1; transform: translate(3px,-3px); }
+
+.project-row__num {
+  font-size: var(--fs-tag); letter-spacing: .12em;
+  color: var(--s-light-mut); width: 2.2rem; flex-shrink: 0;
+}
+.project-row__body { flex: 1; }
+.project-row__name {
+  font-family: var(--serif);
+  font-size: var(--fs-h3); font-weight: 300;
+  line-height: 1; letter-spacing: -.01em;
+  transition: letter-spacing .4s var(--ease);
+}
+.project-row__type {
+  font-size: .73rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--s-light-mut); margin-top: .35rem;
+}
+.project-row__arrow {
+  font-size: 1.1rem; color: var(--bronze);
+  opacity: 0;
+  transition: opacity .2s, transform .4s var(--ease);
+}
+
+/* In-progress projects: same row rhythm as a linked project, but
+   non-interactive - no hover lift, no cursor label, no arrow. A small
+   status tag replaces the arrow so nothing implies a link that doesn't
+   exist yet. */
+.project-row--pending {
+  display: flex; align-items: center; gap: var(--sp-md);
+  padding: 1.7rem 0;
+  color: var(--s-light-text);
+}
+.project-row--pending:hover {
+  transform: translateY(-3px);
+  background-color: rgba(26,24,22,.025);
+}
+.project-row--featured {
+  z-index: 1;
+}
+.project-row--featured::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--bronze);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .65s var(--ease);
+}
+.project-row--featured:hover {
+  transform: translateY(-7px);
+  background-color: rgba(184,149,106,.075);
+  box-shadow: 0 1.2rem 2.5rem rgba(26,24,22,.08);
+}
+.project-row--featured:hover::after { transform: scaleX(1); }
+.project-row--featured:hover .project-row__num,
+.project-row--featured:hover .project-row__status {
+  color: var(--bronze);
+}
+.project-row--featured:hover .project-row__name {
+  letter-spacing: .015em;
+}
+.project-row--pending .project-row__type { color: var(--s-light-mut); }
+.project-row__status {
+  flex-shrink: 0;
+  font-size: .7rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--s-light-mut);
+  border: 1px solid rgba(26,24,22,.15);
+  border-radius: 100px;
+  padding: .35rem .85rem;
+}
+.project-row--live .project-row__status {
+  color: var(--bronze);
+  border-color: rgba(184,149,106,.3);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CONTACT — dark, centered, minimal
+═══════════════════════════════════════════════════════════ */
+.contact {
+  background: var(--s-dark-bg);
+  color: var(--s-dark-text);
+  padding: var(--sp-2xl) 0 var(--sp-xl);
+}
+.contact .container {
+  display: flex; justify-content: center;
+}
+.contact--home .container,
+.contact--page .container {
+  max-width: 760px;
+}
+.contact__intro {
+  width: 100%;
+}
+.contact__intro--centered {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.contact__eye {
+  display: block;
+  font-size: .74rem; letter-spacing: .24em; text-transform: uppercase;
+  color: var(--bronze); margin-bottom: .85rem;
+}
+.contact__title {
+  font-family: var(--serif);
+  font-size: clamp(2.3rem, 4.4vw, 3.6rem);
+  font-weight: 300; line-height: 1.05; letter-spacing: -.025em;
+  margin-bottom: .95rem;
+}
+.contact__title em { color: var(--bronze); font-style: italic; }
+.contact__body {
+  font-size: clamp(.88rem, 1.05vw, .96rem);
+  font-weight: 300; line-height: 1.7;
+  color: rgba(240,234,225,.45);
+  max-width: 420px; margin-bottom: 1.35rem;
+}
+.contact__links { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .2rem; }
+.contact__links--centered { justify-content: center; }
+.contact-link {
+  display: inline-flex; align-items: center; gap: .45rem;
+  font-size: .74rem; font-weight: 400; letter-spacing: .1em;
+  border-radius: 100px; padding: .65rem 1.25rem;
+  border: 1px solid rgba(240,234,225,.16);
+  color: var(--s-dark-text);
+  transition: border-color .2s, background .2s, transform .4s var(--ease);
+}
+.contact-link svg { width: 13px; height: 13px; }
+.contact-link:hover {
+  border-color: var(--bronze); background: rgba(184,149,106,.1);
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER — Phase 5: vertically stacked centred
+═══════════════════════════════════════════════════════════ */
+.site-footer {
+  background: var(--s-dark-bg);
+  border-top: 1px solid rgba(240,234,225,.05);
+  padding: var(--sp-lg) 0;
+  transition: background .4s;
+}
+.site-footer__inner {
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: .45rem;
+}
+.footer-logo  { font-size: 1.1rem; font-weight: 500; letter-spacing: .22em; color: var(--s-dark-text); opacity: .6; }
+.footer-name  { font-family: var(--serif); font-size: 1.3rem; font-weight: 300; color: var(--s-dark-text); opacity: .4; margin-bottom: .6rem; }
+.footer-rule  { width: 50px; height: 1px; background: var(--s-dark-text); opacity: .1; margin: .3rem 0 .9rem; }
+.footer-copy,
+.footer-built { font-size: .73rem; color: var(--s-dark-text); opacity: .35; letter-spacing: .05em; line-height: 1.9; }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .about__grid,
+  .skills__grid { grid-template-columns: 1fr; gap: var(--sp-md); }
+  .contact .container { grid-template-columns: 1fr; gap: var(--sp-lg); }
+  .contact__title { font-size: clamp(2.5rem, 6vw, 4rem); }
+  .about__heading { font-size: clamp(2.5rem, 6vw, 4rem); }
+  /* Tablet: portrait image should not dominate the stacked layout */
+  .about__portrait { max-width: 160px; }
+  /* Reduce project row padding on tablet so rows don't feel too tall */
+  .project-row__link { padding: 1.35rem 0; }
+}
+
+/* Portrait tablet (768px) — fills the gap between 900 and 600
+   where grids stack but some mobile-only rules shouldn't yet fire */
+@media (max-width: 768px) {
+  .about__stats { gap: var(--sp-sm); flex-wrap: wrap; }
+  .contact__links { gap: .5rem; }
+  .contact-link { padding: .6rem 1rem; font-size: .7rem; }
+}
+
+/* Landscape tablet / short screens — hero is too tall in landscape */
+@media (max-height: 600px) and (orientation: landscape) {
+  .hero { height: 100svh; min-height: 480px; }
+  .hero__content { padding-bottom: 1rem; }
+}
+@media (max-width: 600px) {
+  .hero { padding-bottom: var(--sp-lg); }
+  .hero__title { font-size: clamp(2.5rem, 10vw, 4rem); }
+  .about__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr);
+    gap: .9rem;
+  }
+  .about__left .pill-btn {
+    position: relative;
+    left: -.5rem;
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    padding-inline: .5rem;
+    white-space: nowrap;
+  }
+  .scroll-cue { margin-top: 2.85rem; }
+  .scroll-cue__chevron { width: 44px; }
+  .philosophy__inner {
+    padding-inline: 1.15rem;
+  }
+  .philosophy__quote {
+    font-size: clamp(1.3rem, 5.5vw, 1.8rem);
+    text-align: center;
+  }
+  .project-row__num { display: none; }
+  .nav-link { font-size: clamp(2.5rem, 10vw, 4rem); }
+  .nav-overlay__footer { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REACT MIGRATION ADDITIONS
+   Standalone About/Contact pages need extra top clearance since
+   they're no longer preceded by the full-height hero on scroll.
+   A skip-link and profile image are added for WCAG compliance.
+═══════════════════════════════════════════════════════════ */
+.about--page,
+.contact--page { padding-top: calc(var(--sp-xl) + 4rem); }
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 1000;
+  background: var(--bronze);
+  color: #171614;
+  padding: .8rem 1.4rem;
+  border-radius: 6px;
+  font-size: .85rem;
+  font-weight: 500;
+  letter-spacing: .04em;
+  transition: top .2s var(--ease);
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+.about__portrait {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: var(--sp-md);
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .about--page,
+  .contact--page { padding-top: calc(var(--sp-lg) + 3rem); }
+}
