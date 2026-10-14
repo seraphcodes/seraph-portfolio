@@ -31,8 +31,8 @@ const projects = [
   },
   {
     num: '03',
-    name: 'AI Demo Project',
-    type: 'Exploring applied AI in a small, focused product',
+    name: 'Verdict AI',
+    type: 'AI-Powered SaaS for analysing customer reviews, uncovering sentiment, and product insights, and supporting data-driven decisions.',
     status: 'In progress',
   },
 ]
