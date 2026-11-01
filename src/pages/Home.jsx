@@ -194,9 +194,19 @@ export default function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                     data-cursor
-                    data-cursor-label="View"
                     aria-label={`${project.name} — open live project in a new tab`}
                   >
+                    {project.image ? (
+                      <img
+                        className="project-row__thumb"
+                        src={project.image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        draggable="false"
+                        onError={(e) => e.currentTarget.remove()}
+                      />
+                    ) : null}
                     <span className="project-row__num" aria-hidden="true">
                       {project.num}
                     </span>
@@ -216,6 +226,17 @@ export default function Home() {
                   data-reveal-y="30"
                   data-project={project.slug}
                 >
+                  {project.image ? (
+                    <img
+                      className="project-row__thumb"
+                      src={project.image}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      draggable="false"
+                      onError={(e) => e.currentTarget.remove()}
+                    />
+                  ) : null}
                   <span className="project-row__num" aria-hidden="true">
                     {project.num}
                   </span>

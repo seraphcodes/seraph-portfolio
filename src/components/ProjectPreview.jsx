@@ -15,6 +15,8 @@ import { gsap } from '../lib/gsap.js'
  *   never see it (rows stay plain, tappable links).
  * - prefers-reduced-motion: the preview still appears next to the
  *   cursor, but without trailing, tilt or scale animation.
+ * - The card is just the project's screen (no browser frame), like a
+ *   plain rounded image - not a screenshot-in-a-window.
  * - Decorative: pointer-events none and aria-hidden, rows keep their
  *   own accessible names and links.
  *
@@ -112,22 +114,11 @@ const MOCKS = {
   'verdict-ai': MockVerdict,
 }
 
-const URLS = {
-  'fitness-os': 'seraphcodes.github.io/fitness-os',
-  'business-lab': 'seraphcodes.github.io/business-performance-decision-lab',
-  'portfolio': 'seraph-portfolio.vercel.app',
-  'verdict-ai': 'verdict-ai-gilt-sigma.vercel.app',
-}
-
 function Screen({ project, on }) {
   const Mock = MOCKS[project.slug]
   const imgRef = useRef(null)
   return (
     <div className="pp-screen" data-slug={project.slug} data-on={on ? 'true' : 'false'}>
-      <div className="pp-screen__bar" aria-hidden="true">
-        <i /><i /><i />
-        <span>{URLS[project.slug]}</span>
-      </div>
       <div className="pp-screen__body">
         {Mock ? <Mock /> : null}
         {project.image ? (
