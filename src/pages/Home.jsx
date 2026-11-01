@@ -4,6 +4,7 @@ import Hero from '../components/Hero.jsx'
 import useScrollReveal from '../hooks/useScrollReveal.js'
 import useHeroBridge from '../hooks/useHeroBridge.js'
 import useMagneticButton from '../hooks/useMagneticButton.js'
+import ProjectPreview from '../components/ProjectPreview.jsx'
 
 const skills = [
   { name: 'HTML', cat: 'markup' },
@@ -19,18 +20,34 @@ const skills = [
 const projects = [
   {
     num: '01',
+    slug: 'fitness-os',
+    image: '/previews/fitness-os.jpg',
+    name: 'Fitness OS',
+    type: 'Fitness tracker · Training, nutrition & progress · Installable web app',
+    status: 'Live',
+    href: 'https://seraphcodes.github.io/fitness-os/',
+  },
+  {
+    num: '02',
+    slug: 'business-lab',
+    image: '/previews/business-lab.jpg',
+    name: 'Business Performance & Decision Lab',
+    type: 'Retail analytics dashboard · Python · SQL · Power BI',
+    status: 'Live',
+    href: 'https://seraphcodes.github.io/business-performance-decision-lab/#overview',
+  },
+  {
+    num: '03',
+    slug: 'portfolio',
+    image: '/previews/portfolio.jpg',
     name: 'Personal Portfolio',
     type: 'React · GSAP · Vite',
     status: 'Live',
   },
   {
-    num: '02',
-    name: 'Fitness OS',
-    type: 'AI-powered fitness tracker with a personal coaching agent',
-    status: 'In progress',
-  },
-  {
-    num: '03',
+    num: '04',
+    slug: 'verdict-ai',
+    image: '/previews/verdict-ai.jpg',
     name: 'Verdict AI',
     type: 'AI-Powered SaaS for analysing customer reviews, uncovering sentiment, and product insights, and supporting data-driven decisions.',
     status: 'In progress',
@@ -45,6 +62,7 @@ export default function Home() {
   const philosophyTextRef = useRef(null)
   const philosophyQuoteRef = useRef(null)
   const contactButtonRef = useRef(null)
+  const projectListRef = useRef(null)
   useScrollReveal(pageRef)
   useHeroBridge(stageRef, heroApiRef, surfaceTintRef, philosophyTextRef, philosophyQuoteRef)
   useMagneticButton(contactButtonRef)
@@ -166,20 +184,51 @@ export default function Home() {
             <p className="section-tag" aria-hidden="true">Selected Work</p>
             <div className="section-rule" aria-hidden="true"></div>
           </header>
-          <ol className="project-list" role="list">
-            {projects.map((project) => (
-              <li key={project.num} className={`project-row project-row--pending js-reveal${project.status === 'Live' ? ' project-row--live project-row--featured' : ''}`} data-reveal-y="30">
-                <span className="project-row__num" aria-hidden="true">
-                  {project.num}
-                </span>
-                <div className="project-row__body">
-                  <h3 className="project-row__name">{project.name}</h3>
-                  <p className="project-row__type">{project.type}</p>
-                </div>
-                <span className="project-row__status">{project.status}</span>
-              </li>
-            ))}
+          <ol className="project-list" role="list" ref={projectListRef}>
+            {projects.map((project) =>
+              project.href ? (
+                <li key={project.num} className="project-row project-row--live js-reveal" data-reveal-y="30" data-project={project.slug}>
+                  <a
+                    className="project-row__link"
+                    href={project.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-cursor
+                    data-cursor-label="View"
+                    aria-label={`${project.name} — open live project in a new tab`}
+                  >
+                    <span className="project-row__num" aria-hidden="true">
+                      {project.num}
+                    </span>
+                    <div className="project-row__body">
+                      <h3 className="project-row__name">{project.name}</h3>
+                      <p className="project-row__type">{project.type}</p>
+                    </div>
+                    <span className="project-row__status">
+                      {project.status} <span aria-hidden="true">↗</span>
+                    </span>
+                  </a>
+                </li>
+              ) : (
+                <li
+                  key={project.num}
+                  className={`project-row project-row--pending js-reveal${project.status === 'Live' ? ' project-row--live project-row--featured' : ''}`}
+                  data-reveal-y="30"
+                  data-project={project.slug}
+                >
+                  <span className="project-row__num" aria-hidden="true">
+                    {project.num}
+                  </span>
+                  <div className="project-row__body">
+                    <h3 className="project-row__name">{project.name}</h3>
+                    <p className="project-row__type">{project.type}</p>
+                  </div>
+                  <span className="project-row__status">{project.status}</span>
+                </li>
+              )
+            )}
           </ol>
+          <ProjectPreview listRef={projectListRef} projects={projects} />
         </div>
       </section>
 

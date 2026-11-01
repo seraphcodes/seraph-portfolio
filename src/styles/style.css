@@ -1183,3 +1183,124 @@ body.nav-open .nav-toggle__bars span:last-child  { transform: translateY(-6px) r
   .about--page,
   .contact--page { padding-top: calc(var(--sp-lg) + 3rem); }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   PROJECT HOVER PREVIEW — a small screen of the hovered project
+   trails the cursor (see components/ProjectPreview.jsx).
+   Desktop with a fine pointer only; hidden everywhere else.
+═══════════════════════════════════════════════════════════ */
+.project-preview {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 9990; /* above content/header, below the custom cursor (9998) */
+  pointer-events: none;
+  will-change: transform;
+}
+.project-preview__card {
+  position: relative;
+  width: 380px;
+  aspect-ratio: 16 / 10.4;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgba(26,24,22,.08),
+    0 34px 60px -24px rgba(26,24,22,.38),
+    0 10px 24px -10px rgba(26,24,22,.2);
+  opacity: 0;
+  transform-origin: 18% 50%;
+  will-change: transform, opacity;
+}
+.pp-screen {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  opacity: 0;
+  transform: translateY(12px) scale(1.035);
+  transition: opacity .45s var(--ease), transform .7s var(--ease);
+}
+.pp-screen[data-on="true"] { opacity: 1; transform: none; }
+.pp-screen__bar {
+  flex: none; height: 22px;
+  display: flex; align-items: center; gap: 4px;
+  padding: 0 10px;
+  background: #f2efea;
+  border-bottom: 1px solid rgba(26,24,22,.08);
+}
+.pp-screen__bar i { width: 6px; height: 6px; border-radius: 50%; background: rgba(26,24,22,.2); }
+.pp-screen__bar span {
+  margin-left: 8px; min-width: 0;
+  font-size: 8px; letter-spacing: .02em; color: #8b847b;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pp-screen__body { position: relative; flex: 1; overflow: hidden; }
+.pp-screen__img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: top;
+  opacity: 0; transition: opacity .35s;
+}
+.pp-screen__img[data-ok="true"] { opacity: 1; }
+
+/* Drawn mock screens (fallback when no screenshot image is present) */
+.pv { position: absolute; inset: 0; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; font-family: var(--sans, inherit); }
+.pv__row--between { display: flex; align-items: center; justify-content: space-between; }
+.pv__title { font-size: 11px; font-weight: 600; letter-spacing: .01em; }
+.pv__chip { font-size: 8px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 99px; background: rgba(72,77,231,.12); color: #484DE7; }
+.pv__card { font-size: 9px; padding: 8px 10px; border-radius: 9px; background: rgba(0,0,0,.05); }
+.pv__bars { display: flex; align-items: flex-end; gap: 6px; flex: 1; min-height: 0; }
+.pv__bars i { flex: 1; border-radius: 4px 4px 0 0; }
+
+.pv--fitness { background: #f3f3fb; color: #15151c; }
+.pv--fitness .pv__chip--lime { background: #c8f25a; color: #15151c; }
+.pv__fit-main { display: flex; gap: 12px; align-items: center; }
+.pv__ring { width: 62px; height: 62px; border-radius: 50%; flex: none; display: grid; place-items: center; font-size: 13px; font-weight: 700; background: conic-gradient(#c8f25a 0 68%, #dcdcf2 0); position: relative; }
+.pv__ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: #f3f3fb; }
+.pv__ring span { position: relative; }
+.pv__stack { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.pv--fitness .pv__card--dark { background: #15151c; color: #fff; }
+.pv--fitness .pv__card { background: #fff; }
+.pv--fitness .pv__bars i { background: #8c90e6; }
+.pv--fitness .pv__bars i:nth-child(6) { background: #c8f25a; }
+
+.pv--lab { background: #f6f7fd; color: #1c2038; }
+.pv--lab .pv__chip { background: rgba(72,77,231,.12); color: #484DE7; }
+.pv__kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.pv__kpis div { background: #fff; border-radius: 8px; padding: 7px 8px; box-shadow: 0 0 0 1px rgba(28,32,56,.06); }
+.pv__kpis b { display: block; font-size: 12px; font-weight: 700; }
+.pv__kpis small { font-size: 7.5px; color: #7b819f; letter-spacing: .04em; text-transform: uppercase; }
+.pv__line { width: 100%; height: 34px; flex: none; }
+.pv__line path { fill: none; stroke: #484DE7; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.pv--lab .pv__bars i { background: #c9cbf6; }
+.pv--lab .pv__bars i:nth-child(8) { background: #484DE7; }
+
+.pv--portfolio { background: #1a1816; color: #f0eae1; justify-content: center; gap: 8px; padding-inline: 22px; }
+.pv__eyebrow { font-size: 8px; letter-spacing: .24em; text-transform: uppercase; color: #b8956a; }
+.pv__serif { font-family: var(--serif); font-size: 31px; font-weight: 300; line-height: 1; letter-spacing: -.01em; }
+.pv__rule { width: 34px; height: 1px; background: #b8956a; }
+.pv__small { font-size: 9px; letter-spacing: .1em; text-transform: uppercase; opacity: .55; }
+
+.pv--verdict { background: #fcfcfc; color: #1b1b1e; }
+.pv--verdict .pv__chip--pink { background: #f05ce0; color: #1b1b1e; }
+.pv__sent { display: flex; flex-direction: column; gap: 7px; }
+.pv__sent div { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+.pv__sent div i { display: block; height: 7px; border-radius: 99px; background: #484DE7; grid-column: 1; }
+.pv__sent div small { font-size: 8px; color: #6b6b75; grid-column: 2; grid-row: 1; }
+.pv__sent .pv__neg { background: #f05ce0; }
+.pv__sent .pv__neu { background: #c4b6fb; }
+.pv__card--glow { background: linear-gradient(135deg, rgba(72,77,231,.12), rgba(240,92,224,.16)); box-shadow: inset 0 0 0 1px rgba(72,77,231,.14); font-size: 9.5px; line-height: 1.4; margin-top: auto; }
+
+/* Hovered row stands out; the rest of the list steps back. Opacity is
+   applied to the row's contents (not the <li>), because the reveal
+   animation owns the <li>'s own opacity. */
+.project-row__num,
+.project-row__body,
+.project-row__status { transition: opacity .45s var(--ease); }
+.project-list.has-active .project-row:not(.is-active) .project-row__num,
+.project-list.has-active .project-row:not(.is-active) .project-row__body,
+.project-list.has-active .project-row:not(.is-active) .project-row__status { opacity: .28; }
+
+@media (hover: none), (max-width: 899px) {
+  .project-preview { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pp-screen { transition: none; transform: none; }
+}
